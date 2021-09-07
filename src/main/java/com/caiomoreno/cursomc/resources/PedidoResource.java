@@ -1,8 +1,6 @@
 package com.caiomoreno.cursomc.resources;
 
-import com.caiomoreno.cursomc.domain.Categoria;
 import com.caiomoreno.cursomc.domain.Pedido;
-import com.caiomoreno.cursomc.services.CategoriaService;
 import com.caiomoreno.cursomc.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

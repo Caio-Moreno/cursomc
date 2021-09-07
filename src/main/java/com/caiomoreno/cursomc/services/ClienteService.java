@@ -1,8 +1,6 @@
 package com.caiomoreno.cursomc.services;
 
-import com.caiomoreno.cursomc.domain.Categoria;
 import com.caiomoreno.cursomc.domain.Cliente;
-import com.caiomoreno.cursomc.repositories.CategoriaRepository;
 import com.caiomoreno.cursomc.repositories.ClienteRepository;
 import com.caiomoreno.cursomc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

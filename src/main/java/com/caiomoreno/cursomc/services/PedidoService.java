@@ -1,6 +1,5 @@
 package com.caiomoreno.cursomc.services;
 
-import com.caiomoreno.cursomc.domain.Categoria;
 import com.caiomoreno.cursomc.domain.Pedido;
 import com.caiomoreno.cursomc.repositories.PedidoRepository;
 import com.caiomoreno.cursomc.services.exceptions.ObjectNotFoundException;
