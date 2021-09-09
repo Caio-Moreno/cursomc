@@ -1,6 +1,7 @@
 package com.caiomoreno.cursomc.services;
 
 import com.caiomoreno.cursomc.domain.Categoria;
+import com.caiomoreno.cursomc.dto.CategoriaDTO;
 import com.caiomoreno.cursomc.repositories.CategoriaRepository;
 import com.caiomoreno.cursomc.services.exceptions.DataIntegrityException;
 import com.caiomoreno.cursomc.services.exceptions.ObjectNotFoundException;
@@ -53,5 +54,9 @@ public class CategoriaService {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction),orderBy);
 
         return repository.findAll(pageRequest);
+    }
+
+    public Categoria fromDTO(CategoriaDTO categoriaDTO){
+        return new Categoria(categoriaDTO.getId(),categoriaDTO.getNome());
     }
 }
