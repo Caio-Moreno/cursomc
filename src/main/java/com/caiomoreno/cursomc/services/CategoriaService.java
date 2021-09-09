@@ -2,8 +2,10 @@ package com.caiomoreno.cursomc.services;
 
 import com.caiomoreno.cursomc.domain.Categoria;
 import com.caiomoreno.cursomc.repositories.CategoriaRepository;
+import com.caiomoreno.cursomc.services.exceptions.DataIntegrityException;
 import com.caiomoreno.cursomc.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,5 +30,14 @@ public class CategoriaService {
     public Categoria update(Categoria obj) {
         find(obj.getId());
         return repository.save(obj);
+    }
+
+    public void delete(Integer id) {
+        find(id);
+        try {
+            repository.deleteById(id);
+        }catch (DataIntegrityViolationException e){
+            throw new DataIntegrityException("Não é possivel excluir uma categoria que possui produtos");
+        }
     }
 }
