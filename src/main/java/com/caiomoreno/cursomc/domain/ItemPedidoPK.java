@@ -51,4 +51,6 @@ public class ItemPedidoPK implements Serializable {
         result = 31 * result + (getProduto() != null ? getProduto().hashCode() : 0);
         return result;
     }
+
+
 }
