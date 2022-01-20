@@ -1,5 +1,6 @@
 package com.caiomoreno.cursomc.services;
 
+import com.caiomoreno.cursomc.domain.Cliente;
 import com.caiomoreno.cursomc.domain.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,5 +71,19 @@ public abstract class AbstractEmailService implements EmailService {
         return mimeMessage;
     }
 
+    @Override
+    public void sendNewPasswordEmail(Cliente cliente, String newPass) {
+        sendEmail(prepareNewPasswordEmail(cliente, newPass));
+    }
 
+    protected SimpleMailMessage prepareNewPasswordEmail(Cliente cliente, String newPass){
+        SimpleMailMessage sm = new SimpleMailMessage();
+
+        sm.setTo(cliente.getEmail());
+        sm.setFrom(sender);
+        sm.setSubject("Sua senha foi alterada com sucesso!");
+        sm.setSentDate(new Date(System.currentTimeMillis()));
+        sm.setText("Segue sua nova senha: "+newPass);
+        return sm;
+    }
 }
