@@ -1,6 +1,7 @@
 package com.caiomoreno.cursomc.config;
 
 import com.caiomoreno.cursomc.security.JwtAuthenticationFilter;
+import com.caiomoreno.cursomc.security.JwtAuthorizationFilter;
 import com.caiomoreno.cursomc.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -54,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .anyRequest().authenticated();
         http.addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtil));
+        http.addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
