@@ -4,6 +4,7 @@ import com.caiomoreno.cursomc.domain.*;
 import com.caiomoreno.cursomc.domain.enums.EstadoPagamento;
 import com.caiomoreno.cursomc.domain.enums.TipoCliente;
 import com.caiomoreno.cursomc.repositories.*;
+import com.caiomoreno.cursomc.services.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +17,8 @@ import java.util.Arrays;
 public class CursomcApplication implements CommandLineRunner {
 
 
-
+    @Autowired
+    private S3Service s3Service;
 
 
     public static void main(String[] args) {
@@ -26,7 +28,7 @@ public class CursomcApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-
+        s3Service.uploadFile("/Users/caiomoreno/Downloads/novaCoisa.png");
 
     }
 
