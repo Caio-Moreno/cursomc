@@ -2,6 +2,7 @@ package com.caiomoreno.cursomc.services;
 
 import com.caiomoreno.cursomc.services.exceptions.FileException;
 import org.apache.commons.io.FilenameUtils;
+import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,20 @@ public class ImageService {
         } catch (IOException e) {
             throw new FileException("Erro ao ler arquivo");
         }
+    }
+
+    public BufferedImage cropSquare(BufferedImage sourceImg) {
+        int min = Math.min(sourceImg.getHeight(), sourceImg.getWidth());
+        return Scalr.crop(
+                sourceImg,
+                (sourceImg.getWidth() / 2) - (min / 2),
+                (sourceImg.getHeight() / 2) - (min / 2),
+                min,
+                min);
+    }
+
+    public BufferedImage resize(BufferedImage sourceimg, int size){
+        return Scalr.resize(sourceimg, Scalr.Method.ULTRA_QUALITY, size);
     }
 
 }
