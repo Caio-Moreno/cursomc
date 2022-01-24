@@ -41,7 +41,7 @@ public class S3Service {
             File arquivoUpload = new File (Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
             log.info("Uploading...");
-            s3Client.putObject(new PutObjectRequest(bucketName, "novaCoisa_teste.png",arquivoUpload));
+            s3Client.putObject(new PutObjectRequest(bucketName, arquivoOriginal.getName(), arquivoUpload));
             log.info("Upload Realizado com Sucesso...");
         } catch (AmazonServiceException e) {
             log.error("AmazonServiceException " + e.getErrorMessage());
