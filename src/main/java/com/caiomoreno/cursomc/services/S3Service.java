@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class S3Service {
@@ -32,27 +33,16 @@ public class S3Service {
 
     public void uploadFile(String filePath) throws IOException {
 
-
-
         try {
-            log.info("Buscando o arquivo...");
-            File file = new File(filePath);
-            FileInputStream input = new FileInputStream(file);
+            File arquivoOriginal = new File(filePath);
+            FileInputStream input = new FileInputStream(arquivoOriginal);
 
-            log.info("Transforma em MultipartFile...");
-            MultipartFile multipartFile = new MockMultipartFile("file",
-                    file.getName(), "text/plain", IOUtils.toByteArray(input));
+            MultipartFile multipartFile = convertToMultipart(arquivoOriginal.getName(), input);
+            File arquivoUpload = new File (Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
-            File arquivoUpload = new File (multipartFile.getOriginalFilename());
-            FileOutputStream outputStream = new FileOutputStream(arquivoUpload);
-            outputStream.write(multipartFile.getBytes());
-
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, "novaCoisa.png",arquivoUpload);
             log.info("Uploading...");
-            s3Client.putObject(putObjectRequest);
+            s3Client.putObject(new PutObjectRequest(bucketName, "novaCoisa_teste.png",arquivoUpload));
             log.info("Upload Realizado com Sucesso...");
-
-            log.info("UploadFinalizado");
         } catch (AmazonServiceException e) {
             log.error("AmazonServiceException " + e.getErrorMessage());
             log.error("Status code: " + e.getErrorCode());
@@ -63,5 +53,10 @@ public class S3Service {
         } catch (IOException e) {
             log.error("IOException " + e.getMessage());
         }
+    }
+
+    private MultipartFile convertToMultipart(String nome, FileInputStream input) throws IOException {
+        return new MockMultipartFile("file",
+                nome, "text/plain", IOUtils.toByteArray(input));
     }
 }
