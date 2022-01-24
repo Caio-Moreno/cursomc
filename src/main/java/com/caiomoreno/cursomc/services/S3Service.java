@@ -2,6 +2,7 @@ package com.caiomoreno.cursomc.services;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.caiomoreno.cursomc.services.exceptions.FileException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class S3Service {
             String contentType = multipartFile.getContentType();
             return uploadFile(is, filename, contentType);
         } catch (IOException e) {
-            throw new RuntimeException("Erro de IO" + e.getMessage());
+            throw new FileException("Erro de IO" + e.getMessage());
         }
     }
 
@@ -48,12 +49,8 @@ public class S3Service {
             log.info("Upload Realizado com Sucesso...");
             return s3Client.getUrl(bucketName, filename).toURI();
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Erro para converter URL para URI");
+            throw new FileException("Erro para converter URL para URI");
         }
     }
 
-    private MultipartFile convertToMultipart(String nome, FileInputStream input) throws IOException {
-        return new MockMultipartFile("file",
-                nome, "text/plain", IOUtils.toByteArray(input));
-    }
 }
