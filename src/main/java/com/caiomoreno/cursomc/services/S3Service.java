@@ -1,11 +1,7 @@
 package com.caiomoreno.cursomc.services;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +11,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Service
 public class S3Service {
@@ -31,27 +28,27 @@ public class S3Service {
     @Value("${s3.bucket}")
     private String bucketName;
 
-    public void uploadFile(String filePath) throws IOException {
-
+    public URI uploadFile(MultipartFile multipartFile) {
         try {
-            File arquivoOriginal = new File(filePath);
-            FileInputStream input = new FileInputStream(arquivoOriginal);
-
-            MultipartFile multipartFile = convertToMultipart(arquivoOriginal.getName(), input);
-            File arquivoUpload = new File (Objects.requireNonNull(multipartFile.getOriginalFilename()));
-
-            log.info("Uploading...");
-            s3Client.putObject(new PutObjectRequest(bucketName, arquivoOriginal.getName(), arquivoUpload));
-            log.info("Upload Realizado com Sucesso...");
-        } catch (AmazonServiceException e) {
-            log.error("AmazonServiceException " + e.getErrorMessage());
-            log.error("Status code: " + e.getErrorCode());
-        } catch (AmazonClientException e) {
-            log.error("AmazonClientException " + e.getMessage());
-        } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException " + e.getMessage());
+            String filename = multipartFile.getOriginalFilename();
+            InputStream is = multipartFile.getInputStream();
+            String contentType = multipartFile.getContentType();
+            return uploadFile(is, filename, contentType);
         } catch (IOException e) {
-            log.error("IOException " + e.getMessage());
+            throw new RuntimeException("Erro de IO" + e.getMessage());
+        }
+    }
+
+    public URI uploadFile(InputStream is, String filename, String contentType) {
+        try {
+            ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentType(contentType);
+            log.info("Uploading...");
+            s3Client.putObject(bucketName, filename, is, meta);
+            log.info("Upload Realizado com Sucesso...");
+            return s3Client.getUrl(bucketName, filename).toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Erro para converter URL para URI");
         }
     }
 
