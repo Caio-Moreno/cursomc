@@ -27,10 +27,14 @@ public class ClienteResource {
     private ClienteService service;
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public ResponseEntity<Cliente> listar(@PathVariable Integer id){
-
+    public ResponseEntity<Cliente> findById(@PathVariable Integer id){
         Cliente obj = service.find(id);
+        return ResponseEntity.ok().body(obj);
+    }
 
+    @RequestMapping(value = "/email",method = RequestMethod.GET)
+    public ResponseEntity<Cliente> findById(@RequestParam(value = "value") String email){
+        Cliente obj = service.findbyEmail(email);
         return ResponseEntity.ok().body(obj);
     }
 
@@ -94,4 +98,6 @@ public class ClienteResource {
         URI uri = service.uploadProfilePicture(multipartFile);
         return ResponseEntity.created(uri).build();
     }
+
+
 }

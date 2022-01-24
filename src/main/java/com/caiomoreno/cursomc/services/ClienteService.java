@@ -57,7 +57,7 @@ public class ClienteService {
 
         UserSS user = UserService.authenticated();
 
-        if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())){
+        if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
             throw new AuthorizationException("Acesso negado");
         }
 
@@ -97,6 +97,24 @@ public class ClienteService {
         return repository.findAll();
     }
 
+    public Cliente findbyEmail(String email) {
+
+        UserSS user = UserService.authenticated();
+
+        if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        Cliente obj = repository.findByEmail(email);
+
+        if (obj == null) {
+            throw new ObjectNotFoundException(
+                    "Objeto não encontrado! Email: " + email + ", Tipo: " + Cliente.class.getName());
+        }
+
+        return obj;
+    }
+
     public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
 
@@ -128,10 +146,10 @@ public class ClienteService {
         newObj.setEmail(obj.getEmail());
     }
 
-    public URI uploadProfilePicture(MultipartFile multipartFile){
+    public URI uploadProfilePicture(MultipartFile multipartFile) {
         UserSS user = UserService.authenticated();
 
-        if(user == null){
+        if (user == null) {
             throw new AuthorizationException("Acesso negado");
         }
 
@@ -139,7 +157,6 @@ public class ClienteService {
 
         jpgImage = imageService.cropSquare(jpgImage);
         jpgImage = imageService.resize(jpgImage, profileSize);
-
 
 
         String filename = clientePrefix + user.getId() + ".jpg";
