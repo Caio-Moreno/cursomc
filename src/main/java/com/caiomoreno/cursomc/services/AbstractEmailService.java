@@ -2,6 +2,8 @@ package com.caiomoreno.cursomc.services;
 
 import com.caiomoreno.cursomc.domain.Cliente;
 import com.caiomoreno.cursomc.domain.Pedido;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,6 +18,7 @@ import java.util.Date;
 
 public abstract class AbstractEmailService implements EmailService {
 
+    private static final Logger log = LoggerFactory.getLogger(AbstractEmailService.class);
 
     @Value("${default.sender}")
     private String sender;
@@ -53,6 +56,7 @@ public abstract class AbstractEmailService implements EmailService {
     @Override
     public void sendOrderConfirmationHtmlEmail(Pedido obj) {
         try {
+            log.info("AQUI1"+obj);
             sendHtmlEmail(prepareMimeMessageFromPedido(obj));
         } catch (MessagingException e) {
             sendOrderConfirmationEmail(obj);
@@ -60,6 +64,8 @@ public abstract class AbstractEmailService implements EmailService {
     }
 
     protected MimeMessage prepareMimeMessageFromPedido(Pedido obj) throws MessagingException {
+        log.info("SENDER"+ sender);
+        log.info("TO"+ obj.getCliente().getEmail());
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mmh = new MimeMessageHelper(mimeMessage, true);
         mmh.setTo(obj.getCliente().getEmail());
